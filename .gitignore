@@ -1,0 +1,164 @@
+# Dependencies
+node_modules/
+
+# === pnpm ===
+.pnpm-store/
+.pnpm-debug.log*
+
+# === Workspace ===
+# apps/
+# libs/
+
+# Build output
+dist/
+*/dist/
+apps/*/dist/
+libs/*/dist/
+*.tsbuildinfo
+
+# Source artifact hygiene (compiled JS should not live in TS source trees)
+libs/**/src/**/*.js
+libs/**/src/**/*.js.map
+
+# Lock files — pnpm uses pnpm-lock.yaml
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# === Logs ===
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Environment ===
+.env
+.env.local
+.env.*.local
+!.env.example
+apps/*/.env
+libs/*/.env
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.#*
+\#*\#
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Monorepo / Prisma ===
+libs/prisma/.prisma/
+libs/prisma/src/generated/
+libs/contracts/generated/
+apps/*/prisma/src/generated/
+apps/*/prisma/.prisma/
+
+# === Turbo ===
+.turbo/
+turbo.json.local
+
+# === Nx ===
+.nx/cache/
+.nx/workspace-data/
+
+# === TypeScript declaration files ===
+**/*.d.ts
+**/*.d.ts.map
+
+# === gRPC generated code ===
+**/*.pb.ts
+**/*.pb.js
+**/*.grpc.pb.ts
+**/*.grpc.pb.js
+
+# === OpenAPI / generator artifacts ===
+libs/contracts/dist/
+.openapi-generator-ignore
+openapi-generator-*.jar
+
+# === Test & Coverage ===
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+blob-report/
+.auth/
+.maestro/
+maestro-report/
+**/.coverage/
+htmlcov/
+reports/
+
+# === Linting / Formatting caches ===
+.eslintcache
+.stylelintcache
+
+# === SWC ===
+.swc/
+.swcrc
+
+# === Knip ===
+.knip/
+knip-report.json
+
+# === Lint-staged ===
+.lintstagedrc
+
+# === Debug / sessions ===
+.debug-logs/
+.debug-sessions/
+
+# === Temp / cache ===
+.cache/
+.parcel-cache/
+.rp/
+.rp
+.wip/
+tmp/
+tmp*
+*.tmp
+*.bak
+
+# === Fix / helper scripts ===
+fix-*.cjs
+fix-*.mjs
+run_*.sh
+
+# === Bundle analysis ===
+.bundle-stats.json
+bundle-report.html
+
+# === Docs ===
+docs/.cache/
+docs/generated/
+
+# === Deployment ===
+.netlify/
+.vercel/
+
+# === Claude Code ===
+.claude/skills/notify-me/config.json
+.claude/skills/*/workspace/
+.claude/skills/*/evals
+
+# === Secrets / certs ===
+*.pem
+*.crt
+*.key
+keys/
+keys*
+!keys/**/*.pem
+
+# === AI Agents ===
+.agents/
+.claude/
+.copilot/
+.cursor/
+.gemini/
+.codex/

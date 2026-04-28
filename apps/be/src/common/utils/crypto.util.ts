@@ -28,3 +28,12 @@ export const decryptAES = (encryptedData: string, key: string): string => {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 };
+
+export const verifyPKCE = (verifier: string, challenge: string): boolean => {
+  const hash = crypto.createHash('sha256').update(verifier).digest();
+  const derivedChallenge = hash.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+  return derivedChallenge === challenge;
+};

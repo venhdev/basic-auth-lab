@@ -1,4 +1,5 @@
-import { Controller, Post, Body, UnauthorizedException, Res, Req } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, Res, Req, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -11,6 +12,36 @@ export class AuthController {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
   ) {}
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {
+    // req.user contains the google profile validated by strategy
+    let user = await this.usersService.findByEmail(req.user.email);
+    
+    if (!user) {
+      // Auto-register google users
+      user = await this.usersService.create(req.user.email, Math.random().toString(36));
+    }
+
+    const tokens = await this.authService.login(user);
+
+    res.cookie('__Host-refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // Redirect to frontend with access token in query param (temporary for exchange)
+    // In a real app, you might use a postMessage or a dedicated exchange endpoint
+    return res.redirect(`http://localhost:3000/login?token=${tokens.access_token}`);
+  }
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {

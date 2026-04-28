@@ -26,4 +26,15 @@ export class AuthController {
     }
     return this.authService.login(user);
   }
+
+  @Post('refresh')
+  async refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
+  }
+
+  @Post('logout')
+  async logout(@Body('refresh_token') refreshToken: string) {
+    await this.authService.logout(refreshToken);
+    return { message: 'Logged out' };
+  }
 }

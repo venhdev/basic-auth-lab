@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { User } from './users/entities/user.entity';
+import { RefreshToken } from './users/entities/refresh-token.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { User } from './users/entities/user.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User],
+      entities: [User, RefreshToken],
       synchronize: true, // Only for lab development
     }),
     UsersModule,

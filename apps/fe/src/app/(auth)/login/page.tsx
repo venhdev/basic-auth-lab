@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,8 +20,8 @@ export default function LoginPage() {
     
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { access_token, refresh_token } = response.data;
-      setTokens(access_token, refresh_token);
+      const { access_token } = response.data;
+      setAccessToken(access_token);
       router.push('/products');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');

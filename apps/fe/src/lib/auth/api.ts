@@ -3,6 +3,7 @@ import { useAuthStore } from './auth-store';
 
 const api = axios.create({
   baseURL: 'http://localhost:3001',
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
@@ -19,23 +20,21 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = useAuthStore.getState().refreshToken;
       
-      if (refreshToken) {
-        try {
-          const response = await axios.post('http://localhost:3001/auth/refresh', {
-            refresh_token: refreshToken,
-          });
-          
-          const { access_token, refresh_token } = response.data;
-          useAuthStore.getState().setTokens(access_token, refresh_token);
-          
-          originalRequest.headers.Authorization = `Bearer ${access_token}`;
-          return api(originalRequest);
-        } catch (refreshError) {
-          useAuthStore.getState().logout();
-          return Promise.reject(refreshError);
-        }
+      try {
+        // Refresh token is automatically sent via cookie
+        const response = await axios.post('http://localhost:3001/auth/refresh', {}, {
+          withCredentials: true,
+        });
+        
+        const { access_token } = response.data;
+        useAuthStore.getState().setAccessToken(access_token);
+        
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        useAuthStore.getState().logout();
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);

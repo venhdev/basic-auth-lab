@@ -3,9 +3,8 @@ import { persist } from 'zustand/middleware';
 
 interface AuthState {
   accessToken: string | null;
-  refreshToken: string | null;
   user: any | null;
-  setTokens: (access: string, refresh: string) => void;
+  setAccessToken: (access: string) => void;
   setUser: (user: any) => void;
   logout: () => void;
 }
@@ -14,15 +13,14 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       accessToken: null,
-      refreshToken: null,
       user: null,
-      setTokens: (access, refresh) => set({ accessToken: access, refreshToken: refresh }),
+      setAccessToken: (access) => set({ accessToken: access }),
       setUser: (user) => set({ user }),
-      logout: () => set({ accessToken: null, refreshToken: null, user: null }),
+      logout: () => set({ accessToken: null, user: null }),
     }),
     {
       name: 'auth-storage',
-      // M2 uses localStorage for both tokens
+      // Access token can stay in localStorage for now (M4 demo)
     }
   )
 );

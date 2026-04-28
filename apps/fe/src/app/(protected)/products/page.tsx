@@ -32,12 +32,9 @@ export default function ProductsPage() {
   }, [accessToken, router]);
 
   const handleLogout = async () => {
-    const refreshToken = useAuthStore.getState().refreshToken;
-    if (refreshToken) {
-      try {
-        await api.post('/auth/logout', { refresh_token: refreshToken });
-      } catch (e) {}
-    }
+    try {
+      await api.post('/auth/logout');
+    } catch (e) {}
     logout();
     router.push('/login');
   };

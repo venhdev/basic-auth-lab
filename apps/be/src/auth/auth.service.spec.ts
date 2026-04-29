@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -33,13 +32,8 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should return tokens for valid credentials', async () => {
-      const user = { id: '1', email: 'test@example.com', password_hash: 'hashed' };
-      (usersService.findByEmail as jest.Mock).mockResolvedValue(user);
-      
-      // We'll need a mock for comparePassword too, but since it's a utility, 
-      // we might need to mock the utility module or just mock the behavior in service.
-      // For now let's assume we implement validateUser first.
+    it('should be defined', () => {
+      expect(service.login).toBeDefined();
     });
   });
 });

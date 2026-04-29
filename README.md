@@ -109,9 +109,9 @@ cp apps/be/.env.example apps/be/.env
 
 # 4. Start Applications
 # In terminal 1 (Backend)
-cd apps/be && pnpm install && pnpm run dev
+cd apps/be && pnpm install && pnpm run start:dev
 # In terminal 2 (Frontend)
-cd apps/fe && pnpm install && pnpm run dev
+cd apps/fe && pnpm install && pnpm run start:dev
 ```
 
 ### 📂 Project Structure

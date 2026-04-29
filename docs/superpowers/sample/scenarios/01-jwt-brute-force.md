@@ -24,7 +24,18 @@ python3 scripts/exploit/jwt_cracker.py <YOUR_TOKEN>
 ```
 
 ### 3. Giả mạo Token (Forgery)
-Sau khi tìm thấy Secret (ví dụ: `supersecretaccess`), bạn có thể dùng mã này để ký một Token mới với Payload tùy ý (ví dụ: đổi `sub` thành ID của người dùng khác).
+Sử dụng Secret Key tìm được để tạo Token giả danh người dùng bất kỳ (ví dụ: Admin):
+
+```bash
+# Cú pháp: python3 scripts/exploit/jwt_forger.py <SECRET> <EMAIL_MUON_GIA_MAO>
+python3 scripts/exploit/jwt_forger.py supersecretaccess admin@example.com
+```
+
+- **Thực hiện tấn công:**
+    1. Copy đoạn Token vừa được tạo ra.
+    2. Mở trình duyệt, nhấn **F12** -> **Application** -> **Local Storage**.
+    3. Tìm key `auth-storage`, thay thế giá trị của `accessToken` bằng Token giả mạo.
+    4. **F5 (Reload)** trang web. Bạn sẽ thấy mình đã đăng nhập thành công với email của Admin.
 
 ## 💡 Tại sao kịch bản này quan trọng?
 Trong thực tế, nhiều lập trình viên sử dụng các mã bí mật quá ngắn hoặc dễ đoán (như `123456`, `secret`, `admin`). Các cao thủ sử dụng `hashcat` có thể dò tìm hàng tỷ mã mỗi giây.

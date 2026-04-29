@@ -1,13 +1,17 @@
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
-export const encodeBase64 = (str: string): string => Buffer.from(str).toString('base64');
+export const encodeBase64 = (str: string): string =>
+  Buffer.from(str).toString('base64');
 
 export const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, 10);
 };
 
-export const comparePassword = async (password: string, hash: string): Promise<boolean> => {
+export const comparePassword = async (
+  password: string,
+  hash: string,
+): Promise<boolean> => {
   return bcrypt.compare(password, hash);
 };
 
@@ -31,7 +35,8 @@ export const decryptAES = (encryptedData: string, key: string): string => {
 
 export const verifyPKCE = (verifier: string, challenge: string): boolean => {
   const hash = crypto.createHash('sha256').update(verifier).digest();
-  const derivedChallenge = hash.toString('base64')
+  const derivedChallenge = hash
+    .toString('base64')
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');

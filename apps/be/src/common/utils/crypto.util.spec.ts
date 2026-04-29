@@ -1,4 +1,10 @@
-import { encodeBase64, hashPassword, comparePassword, encryptAES, decryptAES } from './crypto.util';
+import {
+  encodeBase64,
+  hashPassword,
+  comparePassword,
+  encryptAES,
+  decryptAES,
+} from './crypto.util';
 
 describe('CryptoUtil', () => {
   it('should encode string to base64', () => {

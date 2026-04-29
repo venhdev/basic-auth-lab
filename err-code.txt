@@ -1,0 +1,8 @@
+---ERROR Code---
+Algorithm Confusion
+
+---Secure Approach---
+
+Zero Trust Header
+Fail-fast
+    case: missing env, and using hardcode

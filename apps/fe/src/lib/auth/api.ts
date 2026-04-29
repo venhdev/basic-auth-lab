@@ -33,6 +33,7 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${access_token}`;
         return api(originalRequest);
       } catch (refreshError) {
+        useAuthStore.getState().setExpired(true);
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }

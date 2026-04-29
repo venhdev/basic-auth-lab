@@ -162,3 +162,7 @@ keys*
 .cursor/
 .gemini/
 .codex/
+
+# Some temp files
+server_log.txt
+accesstoken.txt

@@ -24,8 +24,8 @@ make up   # Hoặc: docker compose up -d
 
 ### 3. Chạy ứng dụng (Application)
 Mở 2 cửa sổ terminal riêng biệt:
-- **Terminal 1 (Backend):** `cd apps/be && pnpm install && pnpm run dev` (Chạy tại port 3001)
-- **Terminal 2 (Frontend):** `cd apps/fe && pnpm install && pnpm run dev` (Chạy tại port 3000)
+- **Terminal 1 (Backend):** `cd apps/be && pnpm install && pnpm run start:dev` (Chạy tại port 3001)
+- **Terminal 2 (Frontend):** `cd apps/fe && pnpm install && pnpm run start:dev` (Chạy tại port 3000)
 
 **Dấu hiệu thành công:** Truy cập `http://localhost:3000` và thấy trang chủ "Secure Auth Lab".
 

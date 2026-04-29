@@ -7,25 +7,29 @@ import { ConfigService } from '@nestjs/config';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private readonly configService: ConfigService) {
     super({
-      clientID: configService.get('GOOGLE_CLIENT_ID'),
-      clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
-      callbackURL: configService.get('GOOGLE_CALLBACK_URL'),
+      clientID: configService.get<string>('GOOGLE_CLIENT_ID') || 'placeholder',
+      clientSecret:
+        configService.get<string>('GOOGLE_CLIENT_SECRET') || 'placeholder',
+      callbackURL:
+        configService.get<string>('GOOGLE_CALLBACK_URL') ||
+        'http://localhost:3001/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
 
-  async validate(
+  validate(
     accessToken: string,
     refreshToken: string,
     profile: any,
     done: VerifyCallback,
-  ): Promise<any> {
-    const { name, emails, photos } = profile;
+  ) {
+    const reqProfile = profile;
+    const { name, emails, photos } = reqProfile;
     const user = {
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      picture: photos[0].value,
+      email: (emails[0] as { value: string }).value,
+      firstName: (name as { givenName: string }).givenName,
+      lastName: (name as { familyName: string }).familyName,
+      picture: (photos[0] as { value: string }).value,
       accessToken,
     };
     done(null, user);

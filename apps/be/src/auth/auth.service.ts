@@ -1,10 +1,21 @@
-import { Injectable, UnauthorizedException, OnModuleInit } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import {
+  Injectable,
+  OnModuleInit,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { v4 as uuidv4 } from 'uuid';
-import { UsersService } from '../users/users.service';
 import { comparePassword } from '../common/utils/crypto.util';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
+
+interface JwtPayload {
+  email: string;
+  sub: string;
+  jti?: string;
+}
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -17,37 +28,44 @@ export class AuthService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.redis = new Redis(this.configService.get('REDIS_URL'));
+    this.redis = new Redis(
+      this.configService.get<string>('REDIS_URL') || 'redis://localhost:6379',
+    );
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await comparePassword(pass, user.password_hash))) {
-      const { password_hash, ...result } = user;
-      return result;
+      return user;
     }
     return null;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload = { email: user.email, sub: user.id };
     return this.generateTokens(payload, user);
   }
 
-  async generateTokens(payload: any, user: any) {
+  async generateTokens(
+    payload: JwtPayload,
+    user: User,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const jti = uuidv4();
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
       this.jwtService.signAsync(
         { ...payload, jti },
         {
-          secret: this.configService.get('JWT_REFRESH_SECRET'),
-          expiresIn: this.configService.get('JWT_REFRESH_EXPIRES'),
+          secret:
+            this.configService.get<string>('JWT_REFRESH_SECRET') || 'secret',
+          expiresIn: (this.configService.get<string>('JWT_REFRESH_EXPIRES') ||
+            '7d') as JwtSignOptions['expiresIn'],
+          algorithm: 'HS256',
         },
       ),
     ]);
 
-    const strategy = this.configService.get('REFRESH_TOKEN_STRATEGY');
+    const strategy = this.configService.get<string>('REFRESH_TOKEN_STRATEGY');
     if (strategy === 'whitelist') {
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);
@@ -60,13 +78,23 @@ export class AuthService implements OnModuleInit {
     };
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(
+    refreshToken: string,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.configService.get('JWT_REFRESH_SECRET'),
-      });
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(
+        refreshToken,
+        {
+          secret:
+            this.configService.get<string>('JWT_REFRESH_SECRET') || 'secret',
+        },
+      );
 
-      const strategy = this.configService.get('REFRESH_TOKEN_STRATEGY');
+      if (!payload.jti) {
+        throw new UnauthorizedException('Token ID missing');
+      }
+
+      const strategy = this.configService.get<string>('REFRESH_TOKEN_STRATEGY');
       if (strategy === 'blacklist') {
         const isBlacklisted = await this.redis.get(`blacklist:${payload.jti}`);
         if (isBlacklisted) {
@@ -80,20 +108,32 @@ export class AuthService implements OnModuleInit {
       }
 
       const user = await this.usersService.findById(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
       const newPayload = { email: user.email, sub: user.id };
       return this.generateTokens(newPayload, user);
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
   async logout(refreshToken: string) {
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.configService.get('JWT_REFRESH_SECRET'),
-      });
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(
+        refreshToken,
+        {
+          secret:
+            this.configService.get<string>('JWT_REFRESH_SECRET') || 'secret',
+        },
+      );
 
-      const strategy = this.configService.get('REFRESH_TOKEN_STRATEGY');
+      if (!payload.jti) {
+        console.error('Token ID missing');
+        return; // Or throw, but for logout, ignoring is fine
+      }
+
+      const strategy = this.configService.get<string>('REFRESH_TOKEN_STRATEGY');
       if (strategy === 'blacklist') {
         await this.redis.set(
           `blacklist:${payload.jti}`,
@@ -104,7 +144,7 @@ export class AuthService implements OnModuleInit {
       } else {
         await this.usersService.deleteRefreshToken(payload.jti);
       }
-    } catch (e) {
+    } catch {
       // Ignore if token invalid
     }
   }

@@ -1,8 +1,13 @@
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { GoogleStrategy } from './strategies/google.strategy';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from '../users/users.module';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { getRequiredBase64Config } from '../common/utils/config.util';
 
 @Module({
   imports: [
@@ -12,8 +17,11 @@ import { UsersModule } from '../users/users.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get('JWT_ACCESS_SECRET'),
-        signOptions: { expiresIn: config.get('JWT_ACCESS_EXPIRES') },
+        privateKey: getRequiredBase64Config(config, 'JWT_PRIVATE_KEY_BASE64'),
+        signOptions: {
+          expiresIn: config.get('JWT_ACCESS_EXPIRES'),
+          algorithm: 'RS256',
+        },
       }),
     }),
   ],

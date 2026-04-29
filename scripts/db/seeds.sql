@@ -8,7 +8,7 @@ INSERT INTO "users" ("id", "email", "password_hash", "created_at")
 VALUES (
     '550e8400-e29b-41d4-a716-446655440000', 
     'admin@test.com', 
-    '$2b$10$fV2F2S4Y1Yp3.vS8.qU1.ORk9Rz8TzR7k9mO1oO1eO1eO1eO1eO1e', 
+    '$2b$10$1hUJAe0AXgqgQGRggtBMguR0SpMelticmdwO8nOrxhpnfW0ht640O', 
     NOW()
 ) ON CONFLICT (email) DO NOTHING;
 
@@ -17,7 +17,7 @@ INSERT INTO "users" ("id", "email", "password_hash", "created_at")
 VALUES (
     '550e8400-e29b-41d4-a716-446655440001', 
     'user@test.com', 
-    '$2b$10$fV2F2S4Y1Yp3.vS8.qU1.ORk9Rz8TzR7k9mO1oO1eO1eO1eO1eO1e', 
+    '$2b$10$1hUJAe0AXgqgQGRggtBMguR0SpMelticmdwO8nOrxhpnfW0ht640O', 
     NOW()
 ) ON CONFLICT (email) DO NOTHING;
 

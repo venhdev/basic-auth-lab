@@ -114,12 +114,22 @@ export default function ProductsPage() {
               </div>
             )}
           </div>
-          <button
-            onClick={handleLogout}
-            className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-6 py-2 rounded-lg transition-all text-sm font-medium"
-          >
-            Sign Out
-          </button>
+          <div className="flex gap-4">
+            {user?.roles?.includes('admin') && (
+              <button
+                onClick={() => router.push('/admin')}
+                className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded-lg transition-all text-sm font-bold shadow-lg shadow-purple-500/20"
+              >
+                👑 Admin Panel
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-6 py-2 rounded-lg transition-all text-sm font-medium"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

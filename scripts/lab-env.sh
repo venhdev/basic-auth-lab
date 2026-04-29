@@ -17,11 +17,8 @@ case "$1" in
         echo "Done. Please restart the backend."
         ;;
     "seed")
-        echo "Seeding database from scripts/seeds/..."
-        for f in scripts/seeds/*.sql; do
-            echo "  -> Running $f..."
-            docker compose exec -T postgres psql -U lab -d auth_lab < "$f"
-        done
+        echo "Seeding database from scripts/db/seeds.sql..."
+        docker compose exec -T postgres psql -U lab -d auth_lab < scripts/db/seeds.sql
         echo "Seeding complete."
         ;;
     "exploit-05")
@@ -31,6 +28,14 @@ case "$1" in
     "exploit-06")
         echo "Running Lab 06 Exploit (IDOR)..."
         python3 scripts/exploit/lab06_idor.py "${@:2}"
+        ;;
+    "prune")
+        echo "Pruning database from scripts/db/prune.sql..."
+        docker compose exec -T postgres psql -U lab -d auth_lab < scripts/db/prune.sql
+        ;;
+    "status")
+        echo "Database Status Report:"
+        docker compose exec -T postgres psql -U lab -d auth_lab < scripts/db/status.sql
         ;;
     *)
         echo "Usage: $0 {stateless|stateful|seed|exploit-05|exploit-06}"

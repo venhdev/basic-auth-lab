@@ -24,3 +24,9 @@ exploit-05:
 
 exploit-06:
 	bash scripts/lab-env.sh exploit-06
+
+prune:
+	bash scripts/lab-env.sh prune
+
+db-status:
+	bash scripts/lab-env.sh status

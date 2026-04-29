@@ -51,7 +51,14 @@ export default function LoginPage() {
         </h1>
         <p className="text-zinc-400 mb-8">Sign in to your auth lab account</p>
         
+        {searchParams.get('registered') && (
+          <div className="mb-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 px-4 py-3 rounded-xl text-sm text-center">
+            Account created! Please log in.
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* ... existing fields ... */}
           <div>
             <label className="block text-sm font-medium text-zinc-400 mb-2">Email Address</label>
             <input
@@ -86,6 +93,16 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Register Link */}
+        <div className="mt-6 text-center">
+          <p className="text-zinc-500 text-sm">
+            Don't have an account?{' '}
+            <a href="/register" className="text-blue-500 hover:text-blue-400 font-medium">
+              Sign up
+            </a>
+          </p>
+        </div>
+
         <div className="mt-8 relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-zinc-800"></div>
@@ -99,6 +116,7 @@ export default function LoginPage() {
           onClick={handleGoogleLogin}
           className="mt-6 w-full bg-white text-black hover:bg-zinc-200 font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
         >
+          {/* ... google svg ... */}
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
               fill="currentColor"

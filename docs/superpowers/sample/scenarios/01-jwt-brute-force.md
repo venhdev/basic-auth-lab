@@ -20,15 +20,15 @@ Chúng ta sẽ sử dụng script `scripts/exploit/jwt_cracker.py` để dò tì
 
 ```bash
 # Cú pháp
-python3 scripts/exploit/jwt_cracker.py <YOUR_TOKEN>
+python3 scripts/exploit/attack-jwt-brute-force.py --token <YOUR_TOKEN>
 ```
 
 ### 3. Giả mạo Token (Forgery)
 Sử dụng Secret Key tìm được để tạo Token giả danh người dùng bất kỳ (ví dụ: Admin):
 
 ```bash
-# Cú pháp: python3 scripts/exploit/jwt_forger.py <SECRET> <EMAIL_MUON_GIA_MAO>
-python3 scripts/exploit/jwt_forger.py supersecretaccess admin@example.com
+# Cú pháp: python3 scripts/exploit/attack-jwt-brute-force.py --forge --secret <SECRET> --email <EMAIL>
+python3 scripts/exploit/attack-jwt-brute-force.py --forge --secret supersecretaccess --email admin@example.com
 ```
 
 - **Thực hiện tấn công:**

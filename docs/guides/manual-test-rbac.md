@@ -52,7 +52,7 @@ Trước khi test, đảm bảo bạn đã:
 ### 4.1. Chế độ Stateless (Vulnerable)
 *   **Thiết lập**: `make mode-stateless` và restart BE.
 *   **Kịch bản**: Chạy script exploit `make exploit-05`.
-*   **Kết quả mong đợi**: Tấn công thành công. Bạn có thể leo quyền lên Admin bằng cách giả mạo JWT (Algorithm Confusion) vì Server tin hoàn toàn vào Payload của Token.
+*   **Kết quả mong đợi**: Tấn công thành công. Bạn có thể leo quyền lên Admin bằng cách giả mạo JWT (Algorithm Confusion) vì Server tin hoàn toàn vào Payload của Token thông qua script `attack-jwt-algorithm-confusion.py`.
 
 ### 4.2. Chế độ Stateful (Secure)
 *   **Thiết lập**: `make mode-stateful` và restart BE.

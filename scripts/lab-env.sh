@@ -22,12 +22,12 @@ case "$1" in
         echo "Seeding complete."
         ;;
     "exploit-05")
-        echo "Running Lab 05 Exploit (Algorithm Confusion)..."
-        python3 scripts/exploit/lab05_priv_esc.py "${@:2}"
+        echo "Running JWT Algorithm Confusion Attack..."
+        python3 scripts/exploit/attack-jwt-algorithm-confusion.py "${@:2}"
         ;;
     "exploit-06")
-        echo "Running Lab 06 Exploit (IDOR)..."
-        python3 scripts/exploit/lab06_idor.py "${@:2}"
+        echo "Running IDOR Profile Attack..."
+        python3 scripts/exploit/attack-idor-profile.py "${@:2}"
         ;;
     "prune")
         echo "Pruning database from scripts/db/prune.sql..."

@@ -26,4 +26,4 @@
 Đây từng là một trong những lỗ hổng nghiêm trọng nhất của JWT. Mặc dù các thư viện hiện đại đã mặc định chặn `alg: none`, nhưng trong các hệ thống cũ hoặc tự triển khai, lỗ hổng này vẫn thỉnh thoảng xuất hiện.
 
 ---
-**Thực hành:** Sử dụng script `scripts/exploit/jwt_none_gen.py` để sinh token nhanh chóng.
+**Thực hành:** Sử dụng script `scripts/exploit/attack-jwt-none-alg.py` để sinh token nhanh chóng.

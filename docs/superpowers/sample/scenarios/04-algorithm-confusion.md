@@ -18,4 +18,5 @@
 Đây là một lỗ hổng logic kinh điển trong các thư viện JWT cũ. Nó cho phép hacker chiếm quyền bất kỳ tài khoản nào nếu biết được Public Key của hệ thống.
 
 ---
-**Thực hành:** Sử dụng script `scripts/exploit/alg_confusion.py`.
+---
+**Thực hành:** Sử dụng script `scripts/exploit/attack-jwt-algorithm-confusion.py`.

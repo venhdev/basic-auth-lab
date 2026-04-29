@@ -19,4 +19,4 @@ Xác định xem một Email có tồn tại trong hệ thống hay không bằn
 Đây là cách các hacker thu thập danh sách người dùng của một hệ thống mà không cần phá khóa. Sau khi có danh sách, họ sẽ tiến hành Brute-force mật khẩu hoặc Phishing nhắm mục tiêu.
 
 ---
-**Thực hành:** Chạy script `scripts/exploit/timing_analyzer.py`.
+**Thực hành:** Chạy script `scripts/exploit/attack-auth-timing.py`.

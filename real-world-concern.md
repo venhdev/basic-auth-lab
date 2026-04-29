@@ -10,6 +10,8 @@
 ## 🔑 1. JWT & AUTHENTICATION (BE)
 - [ ] **Thuật toán ký:** Đảm bảo dùng **RS256** hoặc **Ed25519** cho hệ thống phân tán. Tránh dùng HS256 nếu phải chia sẻ Secret cho nhiều bên.
 - [ ] **Algorithm Confusion:** Kiểm tra code validation có ép kiểu thuật toán (`algorithms: ['RS256']`) hay không? Không được tin vào header `alg` từ client.
+- [ ] **Chiến thuật Mix-Algorithm (RS256 + HS256):** Cân nhắc dùng RS256 cho Access Token (để các dịch vụ khác tự verify) và HS256 cho Refresh Token (để tối ưu hiệu suất vì chỉ Auth Server cần verify).
+- [ ] **Cấu hình thuật toán tường minh:** Luôn chỉ định rõ thuật toán trong hàm `sign()` hoặc `verify()` (ví dụ: `algorithm: 'HS256'`). Tránh việc để Refresh Token "thừa kế" thuật toán RS256 từ cấu hình mặc định của Access Token, dẫn đến lỗi Logic hoặc rủi ro bảo mật.
 - [ ] **Độ mạnh của Key:** Nếu dùng HS256, Secret phải > 32 ký tự ngẫu nhiên. Nếu dùng RS256, khóa phải >= 2048 bit.
 - [ ] **Stateless Validation:** Luôn kiểm tra User còn tồn tại hoặc có bị khóa (`is_active`) trong DB/Cache tại mỗi request không?
 

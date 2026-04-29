@@ -21,7 +21,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: { sub: string; email: string }) {
-    return { userId: payload.sub, email: payload.email };
+  validate(payload: { sub: string; email: string; roles?: string[] }) {
+    // This object is assigned to request.user by Passport
+    return {
+      sub: payload.sub,        // Use 'sub' consistently (not 'userId')
+      email: payload.email,
+      roles: payload.roles || [],  // Map roles from JWT payload
+    };
   }
 }

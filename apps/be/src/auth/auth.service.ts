@@ -11,9 +11,12 @@ import { comparePassword } from '../common/utils/crypto.util';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 
+import { UserRole } from '../common/enums/role.enum'; // eslint-disable-line @typescript-eslint/no-unused-vars
+
 interface JwtPayload {
   email: string;
   sub: string;
+  roles: string[]; // Array of role names
   jti?: string;
 }
 
@@ -42,7 +45,12 @@ export class AuthService implements OnModuleInit {
   }
 
   async login(user: User) {
-    const payload = { email: user.email, sub: user.id };
+    const roles = user.roles?.map((r) => r.name) || [];
+    const payload: JwtPayload = {
+      email: user.email,
+      sub: user.id,
+      roles, // Embed roles into payload
+    };
     return this.generateTokens(payload, user);
   }
 
@@ -111,7 +119,8 @@ export class AuthService implements OnModuleInit {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-      const newPayload = { email: user.email, sub: user.id };
+      const roles = user.roles?.map((r) => r.name) || [];
+      const newPayload: JwtPayload = { email: user.email, sub: user.id, roles };
       return this.generateTokens(newPayload, user);
     } catch {
       throw new UnauthorizedException('Invalid refresh token');

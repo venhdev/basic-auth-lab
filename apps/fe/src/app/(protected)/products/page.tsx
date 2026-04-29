@@ -9,7 +9,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasHydrated, setHasHydrated] = useState(false);
-  const { logout, accessToken, isExpired, setExpired } = useAuthStore();
+  const { logout, accessToken, isExpired, setExpired, user } = useAuthStore();
   const router = useRouter();
 
   // Đợi Zustand nạp xong dữ liệu từ LocalStorage
@@ -20,8 +20,6 @@ export default function ProductsPage() {
   useEffect(() => {
     if (!hasHydrated) return;
 
-    // Chỉ chuyển hướng nếu đã nạp xong dữ liệu mà không thấy Token
-    // và KHÔNG phải trường hợp vừa bị hết hạn (isExpired = true)
     if (!accessToken && !isExpired) {
       router.push('/login');
       return;
@@ -32,8 +30,7 @@ export default function ProductsPage() {
         const response = await api.get('/products');
         setProducts(response.data);
       } catch (err) {
-        // Interceptor đã xử lý 401/refresh. 
-        // Nếu refresh thất bại, isExpired sẽ thành true.
+        // Interceptor handles 401/refresh
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +54,6 @@ export default function ProductsPage() {
     router.push('/login');
   };
 
-  // Hiển thị loading trong lúc đợi Hydration hoặc nạp dữ liệu
   if (!hasHydrated || (isLoading && !isExpired)) {
     return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-400">Loading...</div>;
   }
@@ -85,13 +81,42 @@ export default function ProductsPage() {
         </div>
       )}
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-12">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            Products Lab
-          </h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent mb-2">
+              Products Lab
+            </h1>
+            {user && (
+              <div className="flex flex-wrap gap-3 items-center mt-2">
+                <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-mono text-zinc-300">
+                    {user.email}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {(user.roles?.length ? user.roles : ['user']).map((r) => (
+                    <span
+                      key={r}
+                      className={`text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded border ${
+                        r === 'admin'
+                          ? 'bg-purple-900/50 text-purple-400 border-purple-800'
+                          : 'bg-zinc-900/50 text-zinc-500 border-zinc-800'
+                      }`}
+                    >
+                      {r}
+                    </span>
+                  ))}
+                </div>
+                <div className="text-[10px] text-zinc-600 font-mono">
+                  ID: {user.sub}
+                </div>
+              </div>
+            )}
+          </div>
           <button
             onClick={handleLogout}
-            className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-6 py-2 rounded-lg transition-all"
+            className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 px-6 py-2 rounded-lg transition-all text-sm font-medium"
           >
             Sign Out
           </button>

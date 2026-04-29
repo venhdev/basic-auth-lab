@@ -6,3 +6,11 @@ Algorithm Confusion
 Zero Trust Header
 Fail-fast
     case: missing env, and using hardcode
+
+---Design Approach---
+Role-Based Access Control
+
+---
+Real-world long-term design
+Feature Flag
+typeorm migration:generate và typeorm migration:run for db

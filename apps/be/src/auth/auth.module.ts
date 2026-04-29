@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -7,11 +7,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RolesGuard } from './guards/roles.guard';
+import { OwnershipGuard } from './guards/ownership.guard';
 import { getRequiredBase64Config } from '../common/utils/config.util';
 
 @Module({
   imports: [
-    UsersModule,
+    forwardRef(() => UsersModule), // forwardRef to resolve circular: AuthModule <-> UsersModule
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -25,8 +27,8 @@ import { getRequiredBase64Config } from '../common/utils/config.util';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, RolesGuard, OwnershipGuard],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, RolesGuard, OwnershipGuard],
 })
 export class AuthModule {}
